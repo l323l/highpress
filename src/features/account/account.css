@@ -1,0 +1,307 @@
+.account {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 16px;
+  padding: 24px 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 14px;
+}
+
+.account p {
+  flex: 1 1 280px;
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.account .account-quota {
+  flex: 1 1 100%;
+  order: 3;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.account-sync {
+  color: var(--muted);
+}
+
+.account-form {
+  display: grid;
+  flex: 1;
+  gap: 12px;
+}
+
+.account-field {
+  display: grid;
+  gap: 6px;
+  max-width: 280px;
+}
+
+.account-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.account-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--accent);
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.account-error {
+  flex-basis: 100%;
+  color: var(--danger);
+}
+
+/* 운영 현황 */
+.admin-table th,
+.admin-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-weight: 400;
+}
+
+.admin-table thead th {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-table tbody th {
+  font-weight: 600;
+}
+
+/* 상태는 색만으로 구분하지 않는다: 글자가 함께 있다 */
+.admin-level {
+  display: inline-block;
+  padding: 1px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 13px;
+}
+
+.admin-level[data-level='near'] {
+  border-color: var(--text);
+  font-weight: 700;
+}
+
+.admin-level[data-level='limited'] {
+  border-color: var(--danger);
+  color: var(--danger);
+  font-weight: 700;
+}
+
+.admin-scroll {
+  overflow-x: auto;
+}
+
+.admin-scroll .admin-table {
+  min-width: 600px;
+}
+
+/* 하루 이용 인원 */
+.admin-daily {
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 1px solid var(--border);
+}
+
+.admin-daily h2 {
+  margin: 0 0 8px;
+  font-size: 18px;
+}
+
+.admin-daily__summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 20px 0 0;
+}
+
+.admin-daily__summary div {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.admin-daily__summary dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.admin-daily__summary dd {
+  margin: 4px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-daily__summary dd.admin-daily__sub {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.admin-daily__note {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+  font-size: 14px;
+}
+
+.admin-daily__table td {
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-scroll--daily .admin-table {
+  min-width: 420px;
+}
+
+@media (max-width: 480px) {
+  .admin-daily__summary {
+    gap: 8px;
+  }
+
+  .admin-daily__summary div {
+    padding: 10px;
+  }
+
+  .admin-daily__summary dd {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 640px) {
+  .account {
+    padding: 20px;
+  }
+}
+
+/* 로그인 방법 두 가지. 위아래로 놓고 같은 너비로 맞춘다. */
+.login-buttons {
+  display: grid;
+  gap: 10px;
+  width: min(320px, 100%);
+}
+
+.login-buttons__button {
+  min-height: 46px;
+  font-size: 15px;
+}
+
+.login-buttons .account-error {
+  margin: 2px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* "로그인 · 가입"을 누르면 뜨는 창 */
+.login-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: flex;
+  padding: 16px;
+  overflow-y: auto;
+  background: rgb(0 0 0 / 60%);
+}
+
+.login-dialog {
+  position: relative;
+  width: min(400px, 100%);
+  margin: auto;
+  padding: 28px 28px 24px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  outline: 0;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.login-dialog .login-buttons {
+  width: 100%;
+}
+
+.login-dialog__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+}
+
+.login-dialog__close:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.login-dialog__close:active {
+  transform: scale(0.94);
+}
+
+.login-dialog__title {
+  margin: 0;
+  padding-right: 44px;
+  font-size: 19px;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+}
+
+.login-dialog__text {
+  margin: 8px 0 20px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+  text-wrap: pretty;
+}
+
+.login-dialog__small {
+  margin: 16px 0 0;
+  font-size: 13px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .login-backdrop {
+    animation: login-fade 200ms var(--ease);
+  }
+
+  .login-dialog {
+    animation: login-in 320ms var(--ease);
+  }
+}
+
+@keyframes login-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes login-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}

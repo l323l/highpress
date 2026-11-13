@@ -1,0 +1,22 @@
+{
+  "name": "@highpress/editor",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./src/index.ts",
+    "./sanitize": "./src/sanitize.ts"
+  },
+  "peerDependencies": {
+    "@tiptap/core": "^3.31.4",
+    "@tiptap/extension-file-handler": "^3.31.4",
+    "@tiptap/extension-image": "^3.31.4",
+    "@tiptap/extension-table": "^3.31.4",
+    "@tiptap/extension-text-align": "^3.31.4",
+    "@tiptap/extension-text-style": "^3.31.4",
+    "@tiptap/pm": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
+    "dompurify": "^3.4.16"
+  }
+}

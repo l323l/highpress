@@ -1,0 +1,481 @@
+/* 사진 탭: 영상 탭과 같은 여백 · 칩 · 알약 모양을 쓰고, 사진 주변은 어둡게 두어 표시가 잘 보이게 한다. */
+.photo-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 12px;
+  overflow-y: auto;
+  background: var(--surface);
+  outline: none;
+}
+
+.photo-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.photo-row--end {
+  justify-content: flex-end;
+}
+
+.photo-row__note {
+  flex: 1 1 220px;
+  font-size: 13px;
+}
+
+.photo-spacer {
+  flex: 1;
+}
+
+.photo-name {
+  max-width: 45%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.photo-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.photo-message {
+  margin: 0;
+  font-size: 14px;
+}
+
+/* 파일 입력은 숨기고 버튼 · 칸 모양의 label 로 연다. 초점은 label 에 보인다. */
+.photo-pick,
+.photo-slot {
+  position: relative;
+  cursor: pointer;
+}
+
+.photo-pick input,
+.photo-slot input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.photo-pick:focus-within,
+.photo-slot:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── 처음 화면 ───────────────────────────────────────────────────────── */
+.photo-start {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 28px 20px;
+  border: 1.5px dashed transparent;
+  border-radius: var(--radius);
+  text-align: center;
+  transition:
+    border-color 0.2s var(--ease),
+    background 0.2s var(--ease);
+}
+
+.photo-start[data-dragging] {
+  border-color: var(--border-strong);
+  background: var(--surface-2);
+}
+
+.photo-start__title {
+  margin: 8px 0 0;
+  font-size: 19px;
+  letter-spacing: -0.02em;
+}
+
+.photo-start__text {
+  max-width: 34ch;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.55;
+  text-wrap: balance;
+}
+
+.photo-start__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.photo-start__note {
+  max-width: 40ch;
+  margin: 4px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* 겹친 두 장의 사진 위에 선수 원과 곡선 화살표. 이 탭이 무엇을 하는지 한눈에 보인다. */
+.photo-start__art {
+  position: relative;
+  width: 168px;
+  height: 112px;
+}
+
+.photo-start__frame {
+  position: absolute;
+  width: 112px;
+  height: 76px;
+  border: 3px solid var(--surface);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgb(0 0 0 / 22%);
+}
+
+.photo-start__frame--a {
+  top: 6px;
+  left: 6px;
+  background: linear-gradient(160deg, #3d7a4f 0%, #24563a 60%, #1c4630 100%);
+  transform: rotate(-6deg);
+}
+
+.photo-start__frame--b {
+  right: 6px;
+  bottom: 4px;
+  background:
+    repeating-linear-gradient(90deg, rgb(255 255 255 / 0%) 0 22px, rgb(255 255 255 / 6%) 22px 44px),
+    linear-gradient(170deg, #4a8a5c 0%, #2b6342 100%);
+  transform: rotate(4deg);
+}
+
+.photo-start__marks {
+  position: absolute;
+  right: 0;
+  bottom: 2px;
+  width: 128px;
+  height: 86px;
+  overflow: visible;
+  fill: none;
+  stroke: #ffe14d;
+  stroke-linecap: round;
+  stroke-width: 3;
+  filter: drop-shadow(0 1px 2px rgb(0 0 0 / 55%));
+}
+
+.photo-start__marks path:first-of-type {
+  stroke-dasharray: 6 5;
+}
+
+.photo-start__head {
+  fill: #ffe14d;
+  stroke: none;
+}
+
+/* ── 도구 ────────────────────────────────────────────────────────────── */
+.photo-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+}
+
+.photo-toolgroup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* 묶음 사이에 가는 세로줄 */
+.photo-toolgroup + .photo-toolgroup {
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+}
+
+.photo-tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-height: 34px;
+  padding: 0 11px 0 9px;
+  border: 1px solid var(--border);
+  border-radius: var(--pill);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    background 0.15s var(--ease),
+    border-color 0.15s var(--ease),
+    color 0.15s var(--ease);
+}
+
+.photo-tool:hover {
+  border-color: var(--border-strong);
+}
+
+.photo-tool:active {
+  transform: scale(0.97);
+}
+
+.photo-tool[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.photo-tool:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 한 줄로 두어 문구가 바뀌어도 사진 칸 높이가 바뀌지 않게 한다. */
+.photo-hint {
+  min-height: 1.5em;
+  margin: 0;
+  overflow: hidden;
+  font-size: 13px;
+  line-height: 1.5;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 한 줄로 고정한다. 고른 표시에 따라 칸이 늘어도 줄이 늘지 않아 사진 칸이 밀리지 않는다 (넘치면 옆으로 민다). */
+.photo-props {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+}
+
+.photo-props > * {
+  flex: none;
+}
+
+.photo-props > .photo-spacer {
+  flex: 1 0 8px;
+}
+
+.photo-swatches {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.photo-swatch {
+  position: relative;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 2px solid var(--surface);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--border-strong);
+  cursor: pointer;
+  transition: box-shadow 0.15s var(--ease);
+}
+
+.photo-swatch[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px var(--text);
+}
+
+.photo-swatch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.photo-swatch--custom {
+  background: conic-gradient(#ff4d5e, #ffe14d, #3ddc84, #38bdf8, #a78bfa, #ff4d5e);
+}
+
+.photo-swatch--custom input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.photo-swatch--custom:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.photo-seg button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+  padding: 4px 12px;
+}
+
+.photo-field {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.photo-field .field {
+  width: 140px;
+  min-height: 34px;
+}
+
+.photo-field--short .field {
+  width: 72px;
+}
+
+.photo-field--range input {
+  width: 110px;
+  accent-color: var(--accent);
+}
+
+.photo-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--border-strong);
+}
+
+/* ── 사진 칸 ─────────────────────────────────────────────────────────── */
+.photo-canvas {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: #0c0f10;
+  touch-action: none;
+}
+
+.photo-canvas[data-tool]:not([data-tool='select']) {
+  cursor: crosshair;
+}
+
+.photo-canvas canvas {
+  display: block;
+}
+
+/* ── 콜라주 맞추기 ───────────────────────────────────────────────────── */
+.photo-collage {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.photo-collage[data-layout='column'] {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 420px;
+}
+
+.photo-slot {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 96px;
+  padding: 10px 12px;
+  border: 1.5px dashed var(--border-strong);
+  border-radius: 12px;
+  color: var(--muted);
+  transition:
+    border-color 0.15s var(--ease),
+    background 0.15s var(--ease);
+}
+
+.photo-slot:hover {
+  background: var(--surface-2);
+}
+
+.photo-slot[data-filled] {
+  border-style: solid;
+  border-color: var(--border);
+}
+
+.photo-slot__label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.photo-slot__label strong {
+  color: var(--text);
+  font-size: 14px;
+}
+
+.photo-thumb {
+  flex: none;
+  max-width: 120px;
+  max-height: 76px;
+  border-radius: 6px;
+}
+
+.photo-preview {
+  display: block;
+  align-self: center;
+  max-width: 100%;
+  max-height: 340px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow);
+}
+
+.photo-preview--empty {
+  display: flex;
+  align-self: stretch;
+  align-items: center;
+  justify-content: center;
+  min-height: 160px;
+  padding: 16px;
+  background: var(--surface-2);
+  box-shadow: none;
+  font-size: 13px;
+  text-align: center;
+}
+
+@media (max-width: 640px) {
+  .photo-toolgroup + .photo-toolgroup {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  .photo-tool {
+    padding: 0 9px 0 7px;
+    font-size: 12.5px;
+  }
+
+  .photo-collage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .photo-name {
+    max-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .photo-start,
+  .photo-tool,
+  .photo-swatch,
+  .photo-slot {
+    transition: none;
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "@highpress/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    "./backup": "./src/backup/index.ts",
+    "./body": "./src/body/index.ts",
+    "./db": "./src/db/index.ts",
+    "./feed": "./src/feed/index.ts",
+    "./naver": "./src/naver/index.ts",
+    "./photo": "./src/photo/index.ts",
+    "./spell": "./src/spell/index.ts",
+    "./stats": "./src/stats/index.ts",
+    "./sync": "./src/sync/index.ts",
+    "./tactics": "./src/tactics/index.ts",
+    "./video": "./src/video/index.ts"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3"
+  },
+  "peerDependencies": {
+    "@supabase/supabase-js": "^2.117.3"
+  }
+}

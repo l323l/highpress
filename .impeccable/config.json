@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "mobile/src/editor/protocol.test.ts"
+        ],
+        "createdAt": "2026-10-25T15:12:43.665Z",
+        "reason": "agent: test fixture string '<img onerror=x>' is a deliberate malicious input that readInsert must reject, not rendered UI"
+      }
+    ]
+  }
+}

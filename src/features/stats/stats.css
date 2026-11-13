@@ -1,0 +1,444 @@
+/* ── 도표 (미리보기와 본문이 함께 쓴다) ───────────────────────────── */
+
+.stat-chart {
+  /* 막대 색: 한 가지 값은 --stat-1, 두 팀 비교는 홈 --stat-1 · 원정 --stat-2 */
+  --stat-1: #2a78d6;
+  --stat-2: #eb6834;
+  --stat-step: 45ms;
+  margin: 0;
+  padding: 16px 18px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+:root[data-theme='dark'] .stat-chart {
+  --stat-1: #3987e5;
+  --stat-2: #d95926;
+}
+
+.stat-caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-bottom: 12px;
+}
+
+.stat-title {
+  font-size: 16px;
+  letter-spacing: -0.01em;
+}
+
+.stat-sub {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.stat-source {
+  margin: 12px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* 행이 위에서부터 차례로 자리 잡는다 */
+.stat-row {
+  animation: stat-row-in 0.42s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * var(--stat-step));
+}
+
+@keyframes stat-row-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* 표 */
+.stat-chart .stat-table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-chart .stat-table th,
+.stat-chart .stat-table td {
+  min-width: 0;
+  padding: 7px 8px;
+  border: 0;
+  border-bottom: 1px solid var(--border);
+  background: none;
+  text-align: left;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.stat-chart .stat-table th {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stat-chart .stat-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.stat-chart .stat-table .stat-num {
+  text-align: right;
+}
+
+.stat-chart .stat-table .stat-strong {
+  font-weight: 700;
+}
+
+/* 막대: 굵기 14px, 값 쪽 끝만 둥글게 */
+.stat-bars,
+.stat-versus-rows {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat-bar-row {
+  display: grid;
+  grid-template-columns: 1.5em minmax(7em, 34%) 1fr 2.4em;
+  align-items: center;
+  gap: 10px;
+}
+
+.stat-bar-rank {
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.stat-bar-name {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stat-bar-name strong,
+.stat-bar-name .stat-sub {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stat-bar-name .stat-sub {
+  font-size: 12px;
+}
+
+.stat-bar-track {
+  display: flex;
+  height: 14px;
+}
+
+.stat-bar-track--home {
+  justify-content: flex-end;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  min-width: 2px;
+  border-radius: 0 4px 4px 0;
+  background: var(--stat-1);
+  transform-origin: left center;
+  animation: stat-bar-grow 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  animation-delay: calc(var(--i, 0) * var(--stat-step) + 120ms);
+}
+
+.stat-bar-fill--home {
+  border-radius: 4px 0 0 4px;
+  transform-origin: right center;
+}
+
+.stat-bar-fill--away {
+  background: var(--stat-2);
+}
+
+@keyframes stat-bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.stat-bar-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* 두 팀 비교 */
+.stat-legend {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+
+.stat-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.stat-swatch {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.stat-swatch--home {
+  background: var(--stat-1);
+}
+
+.stat-swatch--away {
+  background: var(--stat-2);
+}
+
+.stat-versus-head {
+  display: grid;
+  grid-template-columns: 4em 1fr 4em;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.stat-versus-label {
+  color: var(--muted);
+  font-size: 13px;
+  text-align: center;
+}
+
+.stat-versus-value {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-versus-value:last-child {
+  text-align: right;
+}
+
+/* 가운데 2px 틈이 기준선 구실을 한다 */
+.stat-versus-bars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+
+/* 본문 안의 도표 */
+.stat-block {
+  margin: 14px 0;
+  border-radius: var(--radius);
+  cursor: grab;
+}
+
+.stat-block--selected {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.stat-broken {
+  margin: 0;
+  padding: 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ── 스탯 창 ──────────────────────────────────────────────────────── */
+
+.stats-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 12px;
+  overflow-y: auto;
+  background: var(--surface);
+}
+
+.stats-tabs,
+.stats-row,
+.stats-seg {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.stats-tabs {
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.stats-spacer {
+  flex: 1;
+}
+
+.stats-match {
+  flex: 1;
+  min-width: 12em;
+}
+
+/* 줄어들지 않게 한다. 줄어들면 긴 도표가 아래 출처 안내와 겹친다. */
+.stats-preview {
+  flex: 1 0 auto;
+  min-height: 200px;
+}
+
+.stats-preview > p {
+  margin: 0;
+  padding: 48px 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.stats-source {
+  margin: 0;
+}
+
+.stats-pick {
+  gap: 6px 12px;
+}
+
+/* 묶음 상자를 만들지 않고 안의 것들이 바깥 줄에 그대로 이어지게 한다 ("본문에 넣기"가 "전체 해제" 바로 옆에 온다) */
+.stats-pick-group {
+  display: contents;
+}
+
+.stats-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.stats-hint,
+.stats-note {
+  font-size: 13px;
+}
+
+.stats-error {
+  color: var(--danger);
+}
+
+/* ── 추천 사이트 ──────────────────────────────────────────────────── */
+
+.stat-sites {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.stat-sites-head h3 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.stat-sites-head p,
+.stat-sites-note {
+  margin: 0;
+  font-size: 13px;
+}
+
+.stat-needs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stat-site-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat-site {
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  animation: stat-row-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.stat-site-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.stat-site h4 {
+  margin: 0;
+  font-size: 17px;
+  letter-spacing: -0.02em;
+}
+
+.stat-site-tagline {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.stat-site-link {
+  flex: none;
+  text-decoration: none;
+}
+
+.stat-site-comment {
+  margin: 10px 0;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.stat-site-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stat-site-tags li {
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-size: 12px;
+}
+
+.stat-site-caveat {
+  margin: 10px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-row,
+  .stat-bar-fill,
+  .stat-site {
+    animation: none;
+  }
+}

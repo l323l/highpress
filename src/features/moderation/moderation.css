@@ -1,0 +1,659 @@
+/* 신고 · 차단 · 숨김 안내 · 운영 화면의 신고 처리.
+   새 모양을 만들지 않는다: 메뉴는 글 화면의 "내 글 메뉴", 창은 로그인 창, 목록은 운영 현황의 표와 같은 값을 쓴다. */
+
+/* "⋯" 메뉴 */
+.mod-menu {
+  position: relative;
+  flex: none;
+}
+
+.mod-menu[data-variant='thread'] {
+  display: inline-flex;
+}
+
+.mod-menu__list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 6;
+  display: grid;
+  gap: 2px;
+  min-width: 176px;
+  padding: 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 28%);
+}
+
+/* 댓글 줄의 메뉴는 단추의 왼쪽 끝에서 펼친다 (오른쪽에 자리가 없을 수 있다). */
+.mod-menu[data-variant='thread'] .mod-menu__list {
+  top: calc(100% + 4px);
+  right: auto;
+  left: 0;
+}
+
+.mod-menu__list button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  transition: background-color 160ms var(--ease);
+}
+
+.mod-menu__list button:hover,
+.mod-menu__list button:focus-visible {
+  background: var(--surface-2);
+}
+
+.mod-menu__list button[data-danger] {
+  color: var(--danger);
+}
+
+/* 메뉴가 열린 카드를 다음 카드보다 위에 그린다 (카드마다 따로 겹침 순서를 갖는다). */
+.post:has(.mod-menu__list) {
+  z-index: 3;
+}
+
+.profile-top .mod-menu {
+  margin-left: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mod-menu__list {
+    transform-origin: top right;
+    animation: mod-menu-in 160ms var(--ease);
+  }
+
+  .mod-menu[data-variant='thread'] .mod-menu__list {
+    transform-origin: top left;
+  }
+}
+
+@keyframes mod-menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+}
+
+/* 창: 로그인 창과 같은 크기 · 모서리 · 그림자 */
+.mod-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 65;
+  display: flex;
+  padding: 16px;
+  overflow-y: auto;
+  background: rgb(0 0 0 / 60%);
+}
+
+.mod-dialog {
+  position: relative;
+  display: grid;
+  gap: 16px;
+  width: min(440px, 100%);
+  margin: auto;
+  padding: 28px 28px 24px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  outline: 0;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.mod-dialog__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+}
+
+.mod-dialog__close:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.mod-dialog__close:active {
+  transform: scale(0.94);
+}
+
+.mod-dialog__title {
+  margin: 0;
+  padding-right: 44px;
+  font-size: 19px;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+  text-wrap: balance;
+  overflow-wrap: anywhere;
+}
+
+.mod-dialog p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.mod-body {
+  display: grid;
+  gap: 8px;
+}
+
+.mod-lead {
+  color: var(--muted);
+}
+
+/* 무엇을 신고하는지: 글 제목 · 댓글 앞부분 · 닉네임. 두 줄까지만. */
+.mod-preview {
+  display: -webkit-box;
+  overflow: hidden;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.mod-form {
+  display: grid;
+  gap: 16px;
+}
+
+/* 사유: 한 줄에 하나씩, 줄 전체를 눌러 고른다. 테두리는 줄 묶음에만 두고 legend 는 바깥 제목처럼 둔다. */
+.mod-reasons {
+  display: grid;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.mod-reasons legend {
+  float: left;
+  width: 100%;
+  padding: 0 0 8px;
+  font-weight: 600;
+}
+
+.mod-reason {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-bottom-width: 0;
+  background: var(--surface);
+  cursor: pointer;
+  transition: background-color 160ms var(--ease);
+}
+
+.mod-reason:first-of-type {
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.mod-reason:last-of-type {
+  border-bottom-width: 1px;
+  border-radius: 0 0 var(--radius-sm) var(--radius-sm);
+}
+
+.mod-reason:hover {
+  background: var(--surface-2);
+}
+
+.mod-reason:has(input:checked) {
+  background: var(--surface-2);
+  font-weight: 600;
+}
+
+.mod-reason input {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.mod-field {
+  display: grid;
+  gap: 8px;
+}
+
+.mod-field label {
+  font-weight: 600;
+}
+
+.mod-field label .muted {
+  font-weight: 400;
+}
+
+.mod-field textarea {
+  width: 100%;
+  min-height: 88px;
+  padding: 10px 12px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.mod-hint {
+  justify-self: end;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.mod-note {
+  font-size: 13px;
+}
+
+.mod-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.mod-done {
+  font-size: 15px;
+}
+
+.mod-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+/* 되돌리기 어려운 일: 붉은 글자에 테두리를 조금 더 진하게 (색만으로 알리지 않는다. 이름이 함께 있다). */
+.btn.mod-danger {
+  border-color: var(--border-strong);
+  font-weight: 600;
+}
+
+.mod-dialog .login-note {
+  margin: 0;
+}
+
+.mod-feedback .feedback textarea {
+  min-height: 120px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mod-backdrop {
+    animation: mod-fade 200ms var(--ease);
+  }
+
+  .mod-dialog {
+    animation: mod-in 320ms var(--ease);
+  }
+}
+
+@keyframes mod-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes mod-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+}
+
+/* 숨김 안내: 글쓴이에게만 보이는 조용한 줄 */
+.mod-hidden {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.mod-hidden svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+.mod-hidden p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+.thread-main .mod-hidden {
+  margin: 6px 0 0;
+}
+
+.mod-link {
+  display: inline;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 160ms var(--ease);
+}
+
+.mod-link:hover {
+  text-decoration-color: var(--text);
+}
+
+/* 설정창의 차단한 사람 */
+.mod-blocked {
+  display: grid;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mod-blocked li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  border-bottom: 1px solid var(--border);
+}
+
+.mod-blocked li:last-child {
+  border-bottom: 0;
+}
+
+.mod-blocked__who {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+  line-height: 1.4;
+}
+
+.mod-blocked__who strong {
+  overflow: hidden;
+  font-size: 14px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mod-blocked__who span {
+  font-size: 12px;
+}
+
+/* 운영 화면: 신고 처리 · 금칙어 */
+.mod-admin__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.mod-admin .mod-admin__head h2 {
+  margin: 0;
+}
+
+.mod-admin h2:focus {
+  outline: 0;
+}
+
+.mod-admin h2:focus-visible {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+}
+
+.mod-status {
+  margin: 8px 0 0;
+  font-size: 14px;
+}
+
+.mod-status:empty {
+  margin: 0;
+}
+
+.mod-admin .mod-error {
+  margin-top: 12px;
+}
+
+/* 지웠지만 남은 사진 파일: 오류는 아니지만 운영자가 할 일이 남았다. */
+.mod-warn {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.mod-reports {
+  display: grid;
+  gap: 12px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mod-report {
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.mod-report__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+}
+
+.mod-report__count {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 상태는 색만으로 구분하지 않는다: 글자가 함께 있다 (운영 현황의 상태 표시와 같은 모양) */
+.mod-tag {
+  display: inline-block;
+  padding: 1px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--pill);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.mod-tag--strong {
+  border-color: var(--text);
+}
+
+.mod-tag--danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.mod-report__preview {
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 10px 0 0;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+.mod-report__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px 16px;
+  margin: 12px 0 0;
+}
+
+.mod-report__meta dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mod-report__meta dd {
+  margin: 0;
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+/* 신고한 사람들이 적은 내용: 글자 그대로, 조용한 인용 */
+.mod-report__details {
+  margin-top: 12px;
+}
+
+.mod-report__label {
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.mod-report__details ul {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mod-report__details li {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 14px;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.mod-report__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+}
+
+.mod-words__form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.mod-words__form .field {
+  flex: 1 1 200px;
+  max-width: 320px;
+}
+
+.mod-words {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mod-word {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px 2px 2px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--pill);
+  font-size: 14px;
+}
+
+.mod-word__remove {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color 160ms var(--ease), color 160ms var(--ease);
+}
+
+.mod-word__remove:hover:not(:disabled) {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.mod-word__remove:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+@media (pointer: coarse) {
+  .mod-menu .icon-btn,
+  .mod-menu .thread-action {
+    min-width: 44px;
+    height: 44px;
+    justify-content: center;
+  }
+
+  .mod-menu__list button {
+    min-height: 44px;
+  }
+
+  .mod-dialog .btn,
+  .mod-blocked .btn,
+  .mod-report__actions .btn,
+  .mod-words__form .btn,
+  .mod-words__form .field {
+    min-height: 44px;
+  }
+
+  .mod-word__remove {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 560px) {
+  .mod-dialog {
+    padding: 24px 20px 20px;
+  }
+
+  .mod-report {
+    padding: 14px;
+  }
+}

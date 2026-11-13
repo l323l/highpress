@@ -1,0 +1,10 @@
+// Cloudflare 배포 설정. `npm run build` 뒤 `npx wrangler deploy` 로 dist 를 올린다.
+{
+  "name": "app",
+  "compatibility_date": "2026-10-01",
+  "assets": {
+    "directory": "./dist",
+    // 없는 주소는 앱의 첫 화면(index.html)을 준다. 네이버 로그인이 돌아오는 /naver-callback 이 여기에 걸린다.
+    "not_found_handling": "single-page-application"
+  }
+}

@@ -1,0 +1,711 @@
+/* 글 한 편을 읽는 화면: 맨 위 줄 아래로, 왼쪽에 글과 댓글, 오른쪽에 글쓴이와 다른 칼럼. */
+.read-page {
+  --page-pad: clamp(20px, 3.4vw, 48px);
+  /* 글(700) + 사이(64) + 옆 칸(340) */
+  --read-width: calc(1104px + var(--page-pad) * 2);
+  padding-bottom: 160px;
+}
+
+/* 맨 위 줄: 읽는 동안 화면 위에 붙어 있다. 선은 화면 끝에서 끝까지 간다. */
+.read-top {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  margin-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
+/* 홈의 맨 위 줄과 같은 짜임: 이름 | 검색 | 로그인·내 계정 */
+.read-top__inner {
+  display: grid;
+  grid-template-columns: minmax(max-content, 1fr) minmax(0, 480px) minmax(max-content, 1fr);
+  align-items: center;
+  gap: 16px;
+  max-width: var(--read-width);
+  height: 56px;
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+}
+
+.read-top__end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.read-top__error {
+  max-width: var(--read-width);
+  margin: 0 auto;
+  padding: 0 var(--page-pad) 10px;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.read-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  justify-self: start;
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: opacity 160ms var(--ease);
+}
+
+.read-brand:hover {
+  opacity: 0.78;
+}
+
+.read-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 700px) 340px;
+  align-items: start;
+  /* 글과 옆 칸을 한 덩어리로 가운데에 둔다. */
+  justify-content: center;
+  gap: 64px;
+  max-width: var(--read-width);
+  margin: 0 auto;
+  padding: 0 var(--page-pad);
+}
+
+.read-page > .feed-empty,
+.read-page > .post-skeleton {
+  max-width: 700px;
+  margin-inline: auto;
+}
+
+.read-main {
+  min-width: 0;
+  /* 본문 17px 에 한 줄 41자쯤. 한글은 이보다 길면 다음 줄을 찾기 어렵다. */
+  max-width: 700px;
+}
+
+/* 글의 머리: 뒤로 | 글쓴이 | (내 글이면) 내리기 */
+.read-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.read-back {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: background-color 160ms var(--ease), transform 160ms var(--ease);
+}
+
+.read-back:hover {
+  background: color-mix(in srgb, var(--surface-2) 82%, var(--text));
+}
+
+.read-back:active {
+  transform: scale(0.94);
+}
+
+.read-title {
+  margin: 16px 0 0;
+  font-size: clamp(22px, 2.3vw, 28px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.36;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+/* 제목 아래의 구단 꼬리표 */
+.read-tags {
+  display: flex;
+  margin: 12px 0 0;
+}
+
+a.post-club {
+  text-decoration: none;
+  transition: border-color 160ms var(--ease), color 160ms var(--ease);
+}
+
+a.post-club:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+/* 대표 사진: 자르지 않고 전체를 어두운 틀 안에 보여 준다. 받아 오는 동안에만 16:9 자리를 잡아 둔다. */
+.read .post-cover {
+  display: grid;
+  place-items: center;
+  margin: 16px 0 0;
+  border: 1px solid var(--card-edge);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.read .post-cover[data-loaded] {
+  aspect-ratio: auto;
+}
+
+.read .post-cover[data-loaded] img {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: min(72vh, 560px);
+  object-fit: contain;
+}
+
+.read .post-body {
+  margin-top: 20px;
+}
+
+/* 글쓰기 화면(16px)보다 한 단계 크게. 여기서는 읽기만 한다. */
+.read .post-prose.prose {
+  font-size: 17px;
+}
+
+/* 좋아요 · 댓글 · 공유: 알약 모양 단추가 한 줄로 선다. */
+.read-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.read-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: var(--pill);
+  background: var(--surface-2);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 160ms var(--ease), transform 160ms var(--ease);
+}
+
+.read-action:hover {
+  background: color-mix(in srgb, var(--surface-2) 82%, var(--text));
+}
+
+.read-action:active {
+  transform: scale(0.97);
+}
+
+.read .feed-error,
+.read .login-note {
+  margin: 14px 0 0;
+}
+
+/* 댓글: 쓰는 칸이 위, 그 아래로 읽는다. */
+.read-comments {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  /* 댓글 단추로 내려왔을 때 맨 위 줄에 가리지 않게 한다. */
+  scroll-margin-top: 72px;
+}
+
+.read-comments__title {
+  margin: 0 0 14px;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.read-comments .comments {
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 15px;
+}
+
+.read-comments .login-note {
+  margin: 0;
+}
+
+.read-comments .comment-form .field {
+  height: 46px;
+}
+
+.comment-sort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+}
+
+.comment-sort .seg button {
+  min-width: 0;
+  min-height: 30px;
+  padding: 3px 14px;
+}
+
+.read-comments .comment-list {
+  gap: 24px;
+}
+
+/* 오른쪽 칸: 글과 함께 흐른다. 가입 안내와 글쓴이 카드까지 들어가 화면보다 길어지기 쉬워서,
+   붙여 두고 안에서 따로 밀게 하지 않는다. */
+.side {
+  display: grid;
+  gap: 24px;
+}
+
+/* 로그인하지 않은 사람에게 보이는 가입 안내 */
+.join {
+  display: grid;
+  gap: 12px;
+  padding: 24px;
+  border-radius: 20px;
+  background: var(--panel);
+}
+
+.join__title {
+  margin: 0;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.join__text {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.join__button {
+  justify-self: stretch;
+  min-height: 44px;
+  margin-top: 4px;
+}
+
+.join__terms {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.join__terms a {
+  color: var(--text);
+  text-underline-offset: 3px;
+}
+
+/* 글쓴이 카드 */
+.author-card {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--card-edge);
+  border-radius: 20px;
+  background: var(--card);
+}
+
+.author-card__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.author-card__who {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.author-card__who .ring {
+  --ring-width: 2px;
+}
+
+.author-card__name {
+  display: grid;
+  min-width: 0;
+  font-size: 12.5px;
+  line-height: 1.4;
+}
+
+.author-card__name strong {
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.author-card__bio {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.author-card__club {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 13px;
+}
+
+.author-card__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.author-card__stats dd {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.author-card__stats dt {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.author-card .feed-error,
+.author-card .login-note {
+  margin: 0;
+}
+
+/* 다른 칼럼 묶음: 틀 없이 제목과 가는 선으로만 나눈다. */
+.side-heading {
+  margin: 0 0 2px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.side-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.side-list li + li {
+  border-top: 1px solid var(--border);
+}
+
+/* 글쓴이 · 제목 · 숫자가 왼쪽에 쌓이고, 대표 사진이 있으면 오른쪽에 작게 선다. */
+.side-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 8px 14px;
+  padding: 14px 0;
+  text-decoration: none;
+}
+
+.side-by,
+.side-title,
+.side-meta {
+  grid-column: 1;
+}
+
+.side-by {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  font-size: 13px;
+}
+
+.side-by .avatar {
+  font-size: 11px !important;
+}
+
+.side-by strong {
+  overflow: hidden;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.side-by time {
+  flex: none;
+}
+
+.side-title {
+  display: -webkit-box;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 4px;
+  transition: text-decoration-color 160ms var(--ease);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.side-item:hover .side-title {
+  text-decoration-color: var(--text);
+}
+
+.side-meta {
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.side-thumb {
+  grid-row: 1 / span 3;
+  grid-column: 2;
+  width: 88px;
+}
+
+.side-thumb .post-cover {
+  aspect-ratio: 1;
+  margin: 0;
+  border-radius: var(--radius-sm);
+}
+
+.side-empty {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.side-ghost {
+  height: 220px;
+  border-radius: 20px;
+  background: var(--surface-2);
+  opacity: 0.5;
+}
+
+.side-ghost--card {
+  height: 150px;
+}
+
+/* 글에 도착하면 글 · 댓글 · 옆 칸이 차례로 올라온다. 피드의 글이 올라오는 것과 같은 움직임이다. */
+@media (prefers-reduced-motion: no-preference) {
+  .read,
+  .read-comments,
+  .side {
+    animation: rise 520ms var(--ease) both;
+  }
+
+  .read-comments {
+    animation-delay: 90ms;
+  }
+
+  .side {
+    animation-delay: 160ms;
+  }
+}
+
+/* 손가락으로 누르는 화면: 단추를 44px 로 키운다. */
+@media (pointer: coarse) {
+  .read-action {
+    height: 44px;
+  }
+
+  .read-back,
+  .read-head .icon-btn,
+  .read-comments .comment .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .read-top__end .btn,
+  .author-card .btn {
+    min-height: 44px;
+  }
+}
+
+/* 좁은 화면: 옆 칸은 댓글 아래로 내려간다. 이름은 글자를 접고 표시만 남긴다. */
+@media (max-width: 1000px) {
+  .read-layout {
+    grid-template-columns: minmax(0, 700px);
+    gap: 40px;
+  }
+
+  .read-brand > span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 760px) {
+  .read-page {
+    padding-bottom: 120px;
+  }
+
+  .read-top {
+    margin-bottom: 16px;
+  }
+
+  .read-top__inner {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+
+  /* 홈에서는 검색이 둘째 줄로 내려가지만, 여기서는 한 줄에 둔다. */
+  .read-search {
+    grid-row: auto;
+    grid-column: auto;
+  }
+
+  /* 내 이름은 프로필 화면에서 보인다. 좁은 줄에서는 아이콘만 둔다. */
+  .read-top__end .home-me {
+    padding: 4px;
+  }
+
+  .read-top__end .home-me > span:last-child {
+    display: none;
+  }
+
+  .read .post-prose.prose {
+    font-size: 16px;
+  }
+}
+
+/* 내 글 메뉴: "…" 단추 아래에 작은 목록이 열린다. */
+.owner-menu {
+  position: relative;
+  flex: none;
+}
+
+.owner-menu__list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 6;
+  display: grid;
+  gap: 2px;
+  min-width: 176px;
+  padding: 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 28%);
+}
+
+.owner-menu__list button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  transition: background-color 160ms var(--ease);
+}
+
+.owner-menu__list button:hover,
+.owner-menu__list button:focus-visible {
+  background: var(--surface-2);
+}
+
+.owner-menu__list button[data-danger] {
+  color: var(--danger);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .owner-menu__list {
+    transform-origin: top right;
+    animation: menu-in 160ms var(--ease);
+  }
+}
+
+@keyframes menu-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+}
+
+@media (pointer: coarse) {
+  .owner-menu .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .owner-menu__list button {
+    min-height: 44px;
+  }
+}
+
+/* 화면 아래에 따라다니는 단추 줄: 글 칸의 끝에 놓여 있다가, 그 자리가 화면 아래에 있는 동안 화면 아래에 붙는다.
+   그래서 따로 위치를 재지 않아도 글 칸의 가운데에 선다. 높이를 차지하지 않고 위로 떠 있다. */
+.read-float {
+  position: sticky;
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  z-index: 4;
+  height: 0;
+  /* 숨어 있는 동안에는 아래의 글을 누르는 데 방해가 되지 않게 한다. */
+  pointer-events: none;
+}
+
+.read-float__bar {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: flex;
+  gap: 2px;
+  padding: 5px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--pill);
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 26%), 0 2px 6px rgb(0 0 0 / 14%);
+  opacity: 0;
+  transform: translate(-50%, 14px);
+  transition: opacity 200ms var(--ease), transform 320ms var(--ease);
+}
+
+.read-float[data-shown] .read-float__bar {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translate(-50%, 0);
+}
+
+/* 바탕이 이미 있으니 안의 단추는 바탕 없이 둔다. */
+.read-float .read-action {
+  background: none;
+  white-space: nowrap;
+}
+
+.read-float .read-action:hover {
+  background: var(--surface-2);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .read-float__bar {
+    transition: opacity 120ms linear;
+    transform: translate(-50%, 0);
+  }
+}

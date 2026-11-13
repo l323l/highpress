@@ -1,0 +1,27 @@
+{
+  // 웹 · 앱이 함께 쓰는 순수 로직. DOM · React · React Native 타입을 넣지 않아, 그런 것에 기대면 여기서 오류가 난다.
+  // 두 쪽에 다 있는 전역(setTimeout · URL · Blob 등)만 globals.d.ts에 적어 둔다.
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../node_modules/.tmp/tsconfig.core.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023"],
+    "types": [],
+    "module": "esnext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src", "globals.d.ts"]
+}

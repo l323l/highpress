@@ -1,0 +1,27 @@
+{
+  // 웹 화면과 앱 웹뷰(DOM 컴포넌트) 안에서 함께 쓰는 TipTap 설정. DOM 에서만 돈다.
+  // React · React Native 타입을 넣지 않는다 (노드 뷰처럼 화면에 기대는 것은 쓰는 쪽이 붙인다).
+  "compilerOptions": {
+    "tsBuildInfoFile": "../../node_modules/.tmp/tsconfig.editor.tsbuildinfo",
+    "target": "es2023",
+    "lib": ["ES2023", "DOM", "DOM.Iterable"],
+    "types": [],
+    "module": "esnext",
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true
+  },
+  "include": ["src"]
+}

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>M0 붙여넣기 실측</title>
+<style>
+  body { font-family: "Malgun Gothic", sans-serif; max-width: 900px; margin: 24px auto; padding: 0 16px; line-height: 1.6; color: #222; }
+  h1 { font-size: 22px; }
+  .steps { background: #f4f6f8; padding: 12px 16px 12px 32px; border-radius: 8px; }
+  .buttons { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+  button { padding: 8px 14px; border: 1px solid #0a7; background: #0a7; color: #fff; border-radius: 6px; cursor: pointer; font-size: 14px; }
+  button.secondary { background: #fff; color: #0a7; }
+  #status { min-height: 1.6em; color: #0a7; font-weight: bold; }
+  .sample { border: 2px dashed #bbb; padding: 16px; border-radius: 8px; margin-bottom: 24px; }
+  .sample-title { font-size: 13px; color: #888; margin: 24px 0 4px; }
+  #results table { border-collapse: collapse; width: 100%; }
+  #results th, #results td { border: 1px solid #ccc; padding: 6px 8px; font-size: 14px; text-align: left; }
+  #results select { font-size: 14px; }
+  textarea { width: 100%; height: 70px; font-size: 14px; box-sizing: border-box; }
+</style>
+</head>
+<body>
+<h1>M0 붙여넣기 실측 — 네이버 블로그·카페 에디터</h1>
+
+<ol class="steps">
+  <li>Chrome 또는 Edge에서 이 파일을 엽니다.</li>
+  <li>네이버 <b>블로그</b> 글쓰기 화면을 열고, 아래 <b>복사 A</b>를 누른 뒤 본문에 Ctrl+V 합니다.</li>
+  <li>결과를 아래 표의 "블로그" 열에 기록합니다.</li>
+  <li>네이버 <b>카페</b> 글쓰기 화면에서 같은 과정을 반복해 "카페" 열에 기록합니다.</li>
+  <li>이미지·GIF가 넘어가지 않으면 <b>복사 B</b>(번호 자리표시 버전)도 붙여넣어 자리표시 문구가 그대로 남는지 확인합니다.</li>
+  <li><b>결과 복사</b>를 눌러 나온 텍스트를 Claude에게 붙여넣어 주세요. (글은 게시하지 않고 닫아도 됩니다)</li>
+</ol>
+
+<div class="buttons">
+  <button id="copyA">복사 A — 이미지 포함</button>
+  <button id="copyB">복사 B — 번호 자리표시</button>
+</div>
+<div id="status" role="status"></div>
+
+<div class="sample-title">샘플 A (이미지·GIF를 본문에 포함)</div>
+<div class="sample" id="sampleA">
+  <p><span style="font-family: 'Nanum Gothic', '나눔고딕', sans-serif;">[글꼴] 나눔고딕으로 쓴 문장입니다.</span></p>
+  <p><span style="font-family: 'Nanum Myeongjo', '나눔명조', serif;">[글꼴] 나눔명조로 쓴 문장입니다.</span></p>
+  <p><span style="font-size: 24px;">[크기] 24px 큰 글자</span> / <span style="font-size: 11px;">[크기] 11px 작은 글자</span></p>
+  <p>[굵게 등] <strong>굵게</strong> <em>기울임</em> <u>밑줄</u> <s>취소선</s></p>
+  <p>[색] <span style="color: #e03131;">빨간 글자</span> <span style="background-color: #ffec99;">노란 배경</span></p>
+  <p style="text-align: center;">[정렬] 가운데 정렬 문단</p>
+  <p style="text-align: right;">[정렬] 오른쪽 정렬 문단</p>
+  <p style="line-height: 2.4;">[줄간격] 줄간격 2.4 문단입니다. 두 줄 이상이 되도록 문장을 길게 씁니다. 줄 사이 간격이 넓게 유지되는지 확인해 주세요. 줄 사이 간격이 넓게 유지되는지 확인해 주세요.</p>
+  <ul><li>[목록] 글머리 기호 1</li><li>글머리 기호 2</li></ul>
+  <ol><li>[목록] 번호 1</li><li>번호 2</li></ol>
+  <blockquote>[인용구] 인용구 안의 문장입니다.</blockquote>
+  <hr>
+  <p>[링크] <a href="https://www.naver.com">네이버로 가는 링크</a></p>
+  <table style="border-collapse: collapse;">
+    <tr><th style="border: 1px solid #333; padding: 4px 10px; background-color: #e7f5ff;">[표] 순위</th><th style="border: 1px solid #333; padding: 4px 10px; background-color: #e7f5ff;">팀</th><th style="border: 1px solid #333; padding: 4px 10px; background-color: #e7f5ff;">승점</th></tr>
+    <tr><td style="border: 1px solid #333; padding: 4px 10px;">1</td><td style="border: 1px solid #333; padding: 4px 10px;">A팀</td><td style="border: 1px solid #333; padding: 4px 10px;">21</td></tr>
+    <tr><td style="border: 1px solid #333; padding: 4px 10px;">2</td><td style="border: 1px solid #333; padding: 4px 10px;">B팀</td><td style="border: 1px solid #333; padding: 4px 10px;">19</td></tr>
+  </table>
+  <p>[이미지] 아래에 민트색 PNG가 보여야 합니다.</p>
+  <p><img id="pngImg" alt="테스트 PNG" width="240"></p>
+  <p>[GIF] 아래에 파랑/분홍으로 깜빡이는 GIF가 보여야 합니다.</p>
+  <p><img id="gifImg" alt="테스트 GIF" width="96"></p>
+</div>
+
+<div class="sample-title">샘플 B (이미지 자리에 번호 자리표시)</div>
+<div class="sample" id="sampleB">
+  <p>이미지 앞 문단입니다.</p>
+  <p style="text-align: center;"><span style="color: #868e96;">[이미지 1 — 01.png 를 여기에 첨부]</span></p>
+  <p>이미지와 GIF 사이 문단입니다.</p>
+  <p style="text-align: center;"><span style="color: #868e96;">[이미지 2 — 02.gif 를 여기에 첨부]</span></p>
+  <p>GIF 뒤 문단입니다.</p>
+</div>
+
+<h2>결과 기록</h2>
+<div id="results"></div>
+<p>기타 메모 (서식이 어떻게 바뀌었는지 등):</p>
+<textarea id="memo"></textarea>
+<div class="buttons">
+  <button id="copyResult" class="secondary">결과 복사</button>
+</div>
+
+<script>
+// 4색(2비트) 팔레트 GIF를 LZW 압축 없이 만든다: 코드 2개마다 clear code를 넣어 코드 폭을 3비트로 고정.
+function makeGif(size, frames, palette, delayCs) {
+  const out = [];
+  const push = (...b) => out.push(...b);
+  const word = (n) => push(n & 255, n >> 8);
+  push(...[71, 73, 70, 56, 57, 97]); // GIF89a
+  word(size); word(size);
+  push(0x81, 0, 0); // global color table, 4 colors
+  for (const [r, g, b] of palette) push(r, g, b);
+  push(0x21, 0xff, 11, ...[...'NETSCAPE2.0'].map((c) => c.charCodeAt(0)), 3, 1, 0, 0, 0); // loop forever
+  for (const pixels of frames) {
+    push(0x21, 0xf9, 4, 0); word(delayCs); push(0, 0);
+    push(0x2c); word(0); word(0); word(size); word(size); push(0);
+    push(2); // LZW minimum code size
+    const bytes = [];
+    let acc = 0, bits = 0;
+    const emit = (code) => {
+      acc |= code << bits; bits += 3;
+      while (bits >= 8) { bytes.push(acc & 255); acc >>= 8; bits -= 8; }
+    };
+    for (let i = 0; i < pixels.length; i++) {
+      if (i % 2 === 0) emit(4); // clear
+      emit(pixels[i]);
+    }
+    emit(5); // end of information
+    if (bits > 0) bytes.push(acc & 255);
+    for (let i = 0; i < bytes.length; i += 255) {
+      const chunk = bytes.slice(i, i + 255);
+      push(chunk.length, ...chunk);
+    }
+    push(0);
+  }
+  push(0x3b);
+  return new Uint8Array(out);
+}
+
+function toDataUrl(bytes, mime) {
+  let s = '';
+  for (const b of bytes) s += String.fromCharCode(b);
+  return 'data:' + mime + ';base64,' + btoa(s);
+}
+
+function makePng() {
+  const c = document.createElement('canvas');
+  c.width = 480; c.height = 270;
+  const g = c.getContext('2d');
+  g.fillStyle = '#000'; g.fillRect(0, 0, 480, 270);
+  g.fillStyle = '#7fd6b4'; g.fillRect(20, 15, 440, 240);
+  g.strokeStyle = '#fff'; g.lineWidth = 3;
+  g.strokeRect(40, 30, 400, 210);
+  g.beginPath(); g.moveTo(240, 30); g.lineTo(240, 240); g.stroke();
+  g.beginPath(); g.arc(240, 135, 34, 0, Math.PI * 2); g.stroke();
+  g.fillStyle = '#fff'; g.font = 'bold 18px sans-serif'; g.fillText('PNG TEST', 195, 262);
+  return c.toDataURL('image/png');
+}
+
+const SIZE = 48;
+const frame = (color) => {
+  const px = new Uint8Array(SIZE * SIZE);
+  for (let y = 0; y < SIZE; y++) for (let x = 0; x < SIZE; x++) {
+    const d = Math.hypot(x - SIZE / 2, y - SIZE / 2);
+    px[y * SIZE + x] = d < 16 ? color : 0;
+  }
+  return px;
+};
+const palette = [[127, 214, 180], [51, 102, 255], [255, 102, 170], [255, 255, 255]];
+document.getElementById('pngImg').src = makePng();
+document.getElementById('gifImg').src = toDataUrl(makeGif(SIZE, [frame(1), frame(2)], palette, 50), 'image/gif');
+
+const statusEl = document.getElementById('status');
+async function copySample(id, label) {
+  const el = document.getElementById(id);
+  const html = el.innerHTML;
+  const text = el.innerText;
+  try {
+    await navigator.clipboard.write([new ClipboardItem({
+      'text/html': new Blob([html], { type: 'text/html' }),
+      'text/plain': new Blob([text], { type: 'text/plain' }),
+    })]);
+    statusEl.textContent = label + ' 복사됨 — 네이버 에디터에 Ctrl+V 하세요.';
+  } catch (err) {
+    const range = document.createRange();
+    range.selectNodeContents(el);
+    const sel = getSelection();
+    sel.removeAllRanges(); sel.addRange(range);
+    const ok = document.execCommand('copy');
+    sel.removeAllRanges();
+    statusEl.textContent = ok ? label + ' 복사됨 (대체 방식).' : '복사 실패: 샘플 영역을 직접 드래그해 Ctrl+C 하세요.';
+  }
+}
+document.getElementById('copyA').onclick = () => copySample('sampleA', '샘플 A');
+document.getElementById('copyB').onclick = () => copySample('sampleB', '샘플 B');
+
+const ITEMS = ['글꼴', '글자 크기', '굵게·기울임·밑줄·취소선', '글자색', '배경색', '정렬', '줄간격', '목록(글머리·번호)', '인용구', '구분선', '링크', '표(테두리·배경 포함)', '이미지(PNG)', 'GIF(움직임 유지)', 'B: 번호 자리표시 문구'];
+const CHOICES = ['미확인', '유지됨', '일부 깨짐', '사라짐'];
+const TARGETS = ['블로그', '카페'];
+const select = (key) => '<select data-key="' + key + '">' + CHOICES.map((c) => '<option>' + c + '</option>').join('') + '</select>';
+document.getElementById('results').innerHTML =
+  '<table><tr><th>항목</th>' + TARGETS.map((t) => '<th>' + t + '</th>').join('') + '</tr>' +
+  ITEMS.map((item) => '<tr><td>' + item + '</td>' + TARGETS.map((t) => '<td>' + select(t + '|' + item) + '</td>').join('') + '</tr>').join('') +
+  '</table>';
+
+document.getElementById('copyResult').onclick = async () => {
+  const lines = ['[M0 붙여넣기 실측 결과] ' + navigator.userAgent];
+  for (const t of TARGETS) {
+    lines.push('', '## ' + t);
+    for (const item of ITEMS) {
+      const v = document.querySelector('select[data-key="' + t + '|' + item + '"]').value;
+      lines.push('- ' + item + ': ' + v);
+    }
+  }
+  lines.push('', '## 메모', document.getElementById('memo').value || '(없음)');
+  const text = lines.join('\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    statusEl.textContent = '결과가 복사되었습니다. Claude에게 붙여넣어 주세요.';
+  } catch (err) {
+    document.getElementById('memo').value = text;
+    statusEl.textContent = '자동 복사 실패: 메모 칸의 내용을 직접 복사해 주세요.';
+  }
+};
+</script>
+</body>
+</html>

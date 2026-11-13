@@ -1,0 +1,62 @@
+/* 이 파일은 scripts/gen-tokens.mjs 가 src/styles/tokens.json 에서 만든다. 직접 고치지 말고 tokens.json 을 고친 뒤 다시 만든다. */
+
+/* 색은 먹색 하나로 간다. 색이 있는 곳은 뜻이 있는 곳뿐이다: 좋아요(붉은색), 오류, 사용자가 고른 팀 색. */
+:root {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-2: #ececee;
+  --panel: #ffffff;
+  --text: #111113;
+  --muted: #5f5f68;
+  --border: #dedee2;
+  --border-strong: #b9b9c0;
+  --accent: #111113;
+  --accent-text: #ffffff;
+  --accent-soft: #e6e6e9;
+  --like: #d42f4a;
+  --danger: #c22a2a;
+  /* 살아 있다는 표시에만 쓰는 잔디색: 새 글 고리, 접속 중 점, 로고의 공 */
+  --live-a: #00a862;
+  --live-b: #a8e000;
+  --live-on-ink: #c6f432;
+  /* 피드의 글 카드: 바탕과 차이가 크지 않은 반투명 면. glow 는 커서 아래에서 번지는 빛이다. */
+  --card: rgb(255 255 255 / 62%);
+  --card-edge: rgb(17 17 19 / 8%);
+  --card-edge-hover: rgb(17 17 19 / 20%);
+  --card-glow: rgb(255 255 255 / 90%);
+  --shadow: 0 1px 2px rgb(17 17 19 / 5%), 0 10px 28px rgb(17 17 19 / 8%);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --pill: 999px;
+  --gap: 16px;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --font: 'Pretendard Variable', 'Pretendard', 'Apple SD Gothic Neo', 'Malgun Gothic', system-ui, sans-serif;
+  color-scheme: light;
+}
+
+/* 어두운 화면이 기본이다. 레딧의 어두운 화면과 같은 값을 쓴다: 바탕은 검정이 아닌 푸른 기가 도는 먹색, 떠 있는 면은 한 단 밝게. */
+/* 완전한 검정(--panel)은 오른쪽 인기 칼럼리스트 패널에만 쓴다. */
+:root[data-theme='dark'] {
+  --bg: #0e1113;
+  --surface: #181c1f;
+  --surface-2: #2a3236;
+  --panel: #000000;
+  --text: #eef1f3;
+  --muted: #8ba2ad;
+  --border: #262c30;
+  --border-strong: #48545b;
+  --accent: #eef1f3;
+  --accent-text: #0e1113;
+  --accent-soft: #2a3236;
+  --like: #ff6480;
+  --danger: #ff7070;
+  --live-a: #1fd485;
+  --live-b: #d4ff3d;
+  --live-on-ink: #008f52;
+  --card: rgb(255 255 255 / 2.2%);
+  --card-edge: rgb(255 255 255 / 8%);
+  --card-edge-hover: rgb(255 255 255 / 18%);
+  --card-glow: rgb(255 255 255 / 7%);
+  --shadow: 0 1px 2px rgb(0 0 0 / 40%), 0 12px 32px rgb(0 0 0 / 45%);
+  color-scheme: dark;
+}

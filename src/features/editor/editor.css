@@ -1,0 +1,1880 @@
+.editor-page {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--surface);
+}
+
+.editor-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gap);
+  height: 100%;
+}
+
+/* 머리글 */
+.editor-header {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px 24px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.editor-header__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.editor-header__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.editor-title {
+  flex: 1 1 240px;
+  min-width: 0;
+  padding: 4px 0;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  transition: border-color 160ms var(--ease);
+}
+
+.editor-title:hover {
+  border-bottom-color: var(--border);
+}
+
+.editor-title:focus {
+  outline: none;
+  border-bottom-color: var(--text);
+}
+
+.editor-save-state {
+  min-width: 150px;
+  font-size: 13px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.editor-save-state[data-error] {
+  color: var(--danger);
+}
+
+.editor-header__meta {
+  padding-left: 46px;
+}
+
+.editor-published-url {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.editor-published-url[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.team-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tool-error {
+  color: var(--danger);
+  font-size: 13px;
+}
+
+/* 핸드폰에서 스탯 · 모션 · 영상 탭을 쓰는 동안에는 머리글을 제목 한 줄로 줄여 작업 창에 자리를 내준다.
+   저장 · 올리기 · 팀 · 링크는 글쓰기 탭에 있다. 저장 오류만은 어느 탭에서든 보인다. */
+.editor-page[data-focus] .editor-header {
+  padding-block: 8px;
+}
+
+.editor-page[data-focus] .editor-header__meta,
+.editor-page[data-focus] .editor-header__actions,
+.editor-page[data-focus] .editor-save-state:not([data-error]) {
+  display: none;
+}
+
+/* 가로로 눕힌 핸드폰: 높이가 낮으니 머리글과 탭의 여백을 줄인다. */
+@media (max-height: 500px) and (pointer: coarse) {
+  .editor-header {
+    gap: 6px;
+    padding: 8px 16px;
+  }
+
+  .editor-title {
+    font-size: 18px;
+  }
+
+  .editor-tabs {
+    padding: 6px 16px;
+  }
+}
+
+/* 작업 창 탭 */
+.editor-tabs {
+  display: flex;
+  justify-content: center;
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.editor-tabs__hint {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* 분할 창 */
+.editor-body {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+}
+
+.split {
+  display: flex;
+  height: 100%;
+}
+
+.split__pane {
+  min-width: 0;
+  height: 100%;
+}
+
+.split__pane--right {
+  flex: 1 1 0;
+}
+
+/* 작업 창이 열릴 때: 누른 탭 단추 아래에서 자라나며 열린다 (독의 아이콘에서 창이 펼쳐지는 것과 같은 움직임).
+   창의 자리와 크기는 바로 정해 두고 모양만 움직인다. 너비를 서서히 바꾸면 전술판과 본문이 매 순간 다시 그려져 끊긴다. */
+@media (prefers-reduced-motion: no-preference) {
+  .split__pane--right {
+    transform-origin: var(--open-x, 50%) 0;
+    /* 앱의 기본 감속(--ease)은 첫 0.1초에 거의 다 가 버려 자라나는 모습이 보이지 않는다. 여기서는 조금 더 고르게 감속한다. */
+    animation: pane-open 440ms cubic-bezier(0.22, 0.75, 0.25, 1) both;
+  }
+
+  /* 글쓰기 창은 새 너비에 자리를 잡으며 살짝 떠오른다. */
+  .split__pane--left {
+    animation: pane-settle 320ms var(--ease);
+  }
+}
+
+@keyframes pane-settle {
+  from {
+    opacity: 0.6;
+  }
+}
+
+@keyframes pane-open {
+  from {
+    opacity: 0;
+    transform: scale(0.72);
+    filter: blur(6px);
+  }
+
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+/* 경계선은 가는 선 하나로 보이고, 잡는 범위는 9px 이다. */
+.split__divider {
+  position: relative;
+  flex: 0 0 9px;
+  background: var(--surface);
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.split__divider::before {
+  content: '';
+  position: absolute;
+  inset: 0 4px;
+  background: var(--border);
+  transition: inset 160ms var(--ease), background-color 160ms var(--ease);
+}
+
+.split__divider:hover::before,
+.split__divider:focus-visible::before,
+.split[data-dragging] .split__divider::before {
+  inset: 0 3px;
+  background: var(--text);
+}
+
+/* 세로로 든 패드: 위아래로 나눈다. 경계선은 가로로 눕고 위아래로 끈다. */
+.split[data-mode='stack'] {
+  flex-direction: column;
+}
+
+.split[data-mode='stack'] .split__pane {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+}
+
+.split[data-mode='stack'] .split__divider {
+  flex-basis: 13px;
+  cursor: row-resize;
+}
+
+.split[data-mode='stack'] .split__divider::before {
+  inset: 6px 0;
+}
+
+.split[data-mode='stack'] .split__divider:hover::before,
+.split[data-mode='stack'] .split__divider:focus-visible::before,
+.split[data-mode='stack'][data-dragging] .split__divider::before {
+  inset: 5px 0;
+}
+
+.split[data-mode='stack'][data-dragging] {
+  cursor: row-resize;
+}
+
+/* 핸드폰: 나누지 않는다. 고른 탭의 창 하나가 화면 전체를 쓴다. */
+.split[data-mode='single'] .split__pane {
+  flex: 1 1 auto;
+  width: 100%;
+}
+
+.split__pane[hidden] {
+  display: none;
+}
+
+/* 경계선을 끄는 동안에는 양쪽 창이 포인터를 가로채지 않게 한다. */
+.split[data-dragging] {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.split[data-dragging] .split__pane {
+  pointer-events: none;
+}
+
+/* 글쓰기 창 */
+.writing {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-width: 0;
+  background: var(--surface);
+}
+
+.toolbar {
+  /* 화면에 보이지 않는 파일 입력(.sr-only)이 이 막대 안에 머물게 한다. */
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 4px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tool-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 묶음 사이의 가는 구분선 */
+.tool-group + .tool-group {
+  margin-left: 4px;
+  padding-left: 8px;
+  border-left: 1px solid var(--border);
+}
+
+.tool-btn {
+  display: inline-grid;
+  place-items: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  white-space: nowrap;
+  transition: background-color 160ms var(--ease), color 160ms var(--ease);
+}
+
+.tool-btn:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.tool-btn[aria-pressed='true'] {
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+/* 켜진 버튼은 마우스를 올려도 먹색 바탕을 지킨다 (흰 아이콘이 옅은 바탕에 묻히지 않게). */
+.tool-btn[aria-pressed='true']:hover:not(:disabled) {
+  background: var(--accent);
+  opacity: 0.86;
+}
+
+.tool-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.tool-select {
+  height: 32px;
+  padding: 0 6px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 160ms var(--ease), border-color 160ms var(--ease);
+}
+
+.tool-select:hover {
+  background: var(--surface-2);
+}
+
+.tool-select:focus-visible {
+  border-color: var(--text);
+  outline-offset: 0;
+}
+
+/* 펼친 목록은 운영체제가 그린다. 어두운 화면에서도 글자가 보이게 색을 준다. */
+.tool-select option,
+.field option {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.tool-color {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding-left: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.tool-color input {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+}
+
+.tool-color input::-webkit-color-swatch-wrapper {
+  padding: 0;
+}
+
+.tool-color input::-webkit-color-swatch {
+  border: 0;
+  border-radius: 50%;
+}
+
+.tool-link {
+  display: flex;
+  flex: 1 1 100%;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.tool-link .field {
+  flex: 0 1 360px;
+  min-width: 0;
+}
+
+.writing__notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 0;
+  padding: 8px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 14px;
+}
+
+.writing__notice--error {
+  background: transparent;
+  border-bottom-color: var(--danger);
+  color: var(--danger);
+}
+
+.writing__scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* 글을 쓸 수 있는 폭을 양쪽 점선으로 보여 준다. 선 안쪽이 본문이 놓이는 자리다. */
+.writing__surface {
+  box-sizing: border-box;
+  width: min(776px, 100% - 24px);
+  min-height: 100%;
+  margin: 0 auto;
+  padding: 48px 24px 120px;
+  border-inline: 1px dashed var(--border-strong);
+}
+
+/* 글자색 프리셋 */
+.tool-swatch {
+  width: 22px;
+  height: 22px;
+  margin: 0 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--swatch);
+  /* 어두운 화면에서 검정 견본이 묻히지 않게 옅은 테두리를 둔다. */
+  outline: 1px solid rgb(128 128 128 / 40%);
+  outline-offset: -1px;
+  box-shadow: 0 0 0 0 var(--text);
+  cursor: pointer;
+  transition: box-shadow 200ms var(--ease), transform 200ms var(--ease);
+}
+
+.tool-swatch:hover {
+  transform: scale(1.12);
+}
+
+.tool-swatch:active {
+  transform: scale(0.94);
+}
+
+/* 지금 글자의 색에는 바탕색 틈을 둔 고리가 선다. */
+.tool-swatch[aria-pressed='true'] {
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--text);
+}
+
+/* 맞춤법 검사 */
+.spell {
+  display: grid;
+  gap: 10px;
+  padding: 14px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 14px;
+}
+
+/* 본문과 같은 폭으로 가운데에 모은다. */
+.spell > * {
+  box-sizing: border-box;
+  width: min(776px, 100%);
+  margin-inline: auto;
+}
+
+.spell__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.spell__title {
+  margin: 0;
+  font-weight: 700;
+}
+
+.spell__actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.spell__list {
+  display: grid;
+  gap: 2px;
+  max-height: 208px;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.spell__item {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  margin-inline: -8px;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.spell__item:hover {
+  background: var(--surface-2);
+}
+
+.spell__where {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-weight: 600;
+  text-align: left;
+}
+
+.spell__where del {
+  color: var(--danger);
+  text-decoration-thickness: 1px;
+}
+
+.spell__where ins {
+  text-decoration: none;
+}
+
+.spell__where span {
+  color: var(--muted);
+}
+
+.spell__why {
+  overflow: hidden;
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.spell__item .btn {
+  min-height: 30px;
+  padding: 2px 12px;
+  font-size: 13px;
+}
+
+.spell__note {
+  margin-block: 0;
+  font-size: 12px;
+  text-wrap: pretty;
+}
+
+@media (max-width: 760px) {
+  .spell__item {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .spell__why {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    white-space: normal;
+  }
+}
+
+/* 본문 */
+.prose {
+  min-height: 60vh;
+  outline: none;
+  font-size: 16px;
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose p {
+  margin: 0 0 0.6em;
+}
+
+.prose blockquote {
+  margin: 1.2em 0;
+  padding: 14px 20px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.prose blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.prose hr {
+  margin: 2em 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+.prose [data-resize-container] {
+  max-width: 100%;
+  margin: 0.8em 0;
+}
+
+.prose [data-resize-wrapper] {
+  max-width: 100%;
+}
+
+.prose .ProseMirror-selectednode img,
+.prose .ProseMirror-selectednode.media-missing {
+  outline: 2px solid var(--text);
+}
+
+.prose [data-resize-handle] {
+  z-index: 1;
+}
+
+.prose [data-resize-handle='left'],
+.prose [data-resize-handle='right'] {
+  width: 8px;
+  cursor: ew-resize;
+}
+
+.prose [data-resize-handle='top'],
+.prose [data-resize-handle='bottom'] {
+  height: 8px;
+  cursor: ns-resize;
+}
+
+.prose [data-resize-handle*='-'] {
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--text);
+  border-radius: 50%;
+  background: var(--surface);
+  opacity: 0;
+}
+
+.prose [data-resize-container]:hover [data-resize-handle*='-'],
+.prose .ProseMirror-selectednode [data-resize-handle*='-'] {
+  opacity: 1;
+}
+
+.prose [data-resize-handle='top-left'],
+.prose [data-resize-handle='bottom-right'] {
+  cursor: nwse-resize;
+}
+
+.prose [data-resize-handle='top-right'],
+.prose [data-resize-handle='bottom-left'] {
+  cursor: nesw-resize;
+}
+
+.media-missing {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  margin: 0.8em 0;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.prose table {
+  width: 100%;
+  margin: 1em 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.prose th,
+.prose td {
+  position: relative;
+  min-width: 1em;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.prose th {
+  background: var(--surface-2);
+  font-weight: 600;
+  text-align: left;
+}
+
+.prose .selectedCell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--text);
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.prose td p,
+.prose th p {
+  margin: 0;
+}
+
+/* 좁은 화면 */
+@media (max-width: 760px) {
+  .editor-header {
+    padding: 12px 16px;
+  }
+
+  .editor-header__meta {
+    padding-left: 0;
+  }
+
+  .editor-title {
+    flex-basis: 0;
+    font-size: 19px;
+  }
+
+  .editor-save-state {
+    min-width: 0;
+    flex: 1 1 100%;
+    order: 3;
+    text-align: left;
+  }
+
+  .editor-header__actions {
+    flex: 1 1 100%;
+    order: 4;
+  }
+
+  .editor-tabs {
+    padding: 8px 16px;
+  }
+
+  .editor-tabs .seg {
+    display: flex;
+    width: 100%;
+  }
+
+  .editor-tabs .seg button {
+    flex: 1;
+    min-width: 0;
+    padding-inline: 8px;
+  }
+
+  /* 도구 막대는 한 줄로 두고 옆으로 민다. 글 쓸 자리를 남기기 위해서다. */
+  .toolbar {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    padding: 6px 12px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tool-group,
+  .tool-link {
+    flex: 0 0 auto;
+    flex-wrap: nowrap;
+  }
+
+  .tool-link {
+    padding-top: 0;
+  }
+
+  .tool-link .field {
+    flex: 0 0 200px;
+  }
+
+  .writing__surface {
+    padding: 28px 20px 96px;
+  }
+}
+
+/* 사용법 안내: 스탯 · 모션 · 영상 탭을 처음 눌렀을 때 탭마다 한 번 뜬다. 모서리가 둥근 직사각형, 오른쪽 위의 동그란 닫기 단추. */
+.guide-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  padding: 16px;
+  overflow-y: auto;
+  background: rgb(0 0 0 / 60%);
+}
+
+.guide {
+  /* 예시 그림과 세 단계가 같은 박자로 돈다: 한 바퀴 9초, 단계마다 3초. */
+  --loop: 9s;
+  position: relative;
+  width: min(480px, 100%);
+  margin: auto;
+  padding: 28px 28px 22px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  outline: 0;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.guide-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--muted);
+  cursor: pointer;
+  transition: background-color 160ms var(--ease), color 160ms var(--ease), transform 160ms var(--ease);
+}
+
+.guide-close:hover {
+  background: var(--accent-soft);
+  color: var(--text);
+}
+
+.guide-close:active {
+  transform: scale(0.94);
+}
+
+.guide-title {
+  margin: 0;
+  padding-right: 44px;
+  font-size: 19px;
+  letter-spacing: -0.015em;
+  line-height: 1.4;
+  text-wrap: balance;
+}
+
+.guide-stage {
+  margin-top: 18px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--bg);
+}
+
+.guide-steps {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.guide-steps li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+}
+
+.guide-num {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.guide-steps strong {
+  display: block;
+  font-size: 14.5px;
+  line-height: 24px;
+}
+
+.guide-steps p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  text-wrap: pretty;
+}
+
+.guide-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.guide-foot p {
+  margin: 0;
+  font-size: 13px;
+}
+
+/* ── 예시 그림 ── 움직임을 줄인 환경에서는 아래의 기본 모양(다 된 상태)이 그대로 보인다. */
+.demo {
+  display: block;
+  width: 100%;
+}
+
+svg.demo {
+  height: auto;
+}
+
+.demo-lines {
+  fill: none;
+  stroke: rgb(255 255 255 / 26%);
+  stroke-width: 1.5;
+}
+
+.demo text {
+  fill: #ffffff;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* 스탯 */
+.demo-stats {
+  display: grid;
+  gap: 14px;
+  padding: 16px 18px;
+  font-size: 12px;
+}
+
+.demo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.demo-chips span {
+  padding: 3px 11px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--pill);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.demo-chips .demo-chip-pick,
+.demo-button {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.demo-bars {
+  display: grid;
+  gap: 7px;
+}
+
+.demo-bar-row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 10px;
+}
+
+.demo-bar-row span {
+  color: var(--muted);
+}
+
+.demo-bar-row i {
+  height: 10px;
+  border-radius: 3px;
+  background: var(--live-a);
+  transform-origin: left;
+}
+
+.demo-bar-row b {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.demo-insert {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.demo-done {
+  color: var(--live-a);
+  font-weight: 700;
+}
+
+.demo-button {
+  padding: 5px 14px;
+  border: 1px solid var(--accent);
+  border-radius: var(--pill);
+  font-weight: 700;
+}
+
+/* 모션 */
+.demo-pitch {
+  fill: #1b4a37;
+}
+
+.demo-home {
+  fill: #ef5350;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+
+.demo-away {
+  fill: #3d8bd4;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+}
+
+.demo-arrow {
+  fill: none;
+  stroke: #ffffff;
+  stroke-dasharray: 100;
+  stroke-linecap: round;
+  stroke-width: 2.5;
+}
+
+.demo-arrowhead {
+  fill: #ffffff;
+}
+
+.demo-target {
+  fill: rgb(239 83 80 / 22%);
+  stroke: #ffffff;
+  stroke-dasharray: 3 3;
+  stroke-width: 1.5;
+}
+
+.demo-grab {
+  fill: rgb(255 255 255 / 30%);
+  opacity: 0;
+}
+
+.demo-play rect {
+  fill: rgb(0 0 0 / 55%);
+}
+
+.demo-play path {
+  fill: #ffffff;
+}
+
+.demo-play,
+.demo-badge,
+.demo-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* 영상 */
+.demo-screen {
+  fill: #16291f;
+}
+
+.demo-extra {
+  fill: rgb(255 255 255 / 45%);
+}
+
+.demo-player {
+  fill: #ffffff;
+}
+
+.demo-ring {
+  fill: none;
+  stroke: var(--live-b);
+  stroke-width: 2.5;
+}
+
+.demo-badge rect {
+  fill: rgb(0 0 0 / 60%);
+}
+
+.demo-badge text {
+  text-anchor: middle;
+}
+
+.demo-track {
+  fill: rgb(255 255 255 / 85%);
+}
+
+.demo-cut {
+  fill: rgb(0 0 0 / 72%);
+  transform-box: fill-box;
+}
+
+.demo-cut-left {
+  transform-origin: left;
+}
+
+.demo-cut-right {
+  transform-origin: right;
+}
+
+.demo-handle {
+  fill: var(--live-b);
+}
+
+.demo-handle-left {
+  transform: translateX(62px);
+}
+
+.demo-handle-right {
+  transform: translateX(-52px);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .guide-backdrop {
+    animation: guide-fade 240ms var(--ease);
+  }
+
+  .guide {
+    animation: guide-in 420ms var(--ease);
+  }
+
+  /* 지금 예시가 보여 주는 단계만 또렷하다. */
+  .guide-steps li {
+    animation: var(--loop) linear infinite;
+  }
+
+  .guide-steps li:nth-child(1) {
+    animation-name: guide-step-1;
+  }
+
+  .guide-steps li:nth-child(2) {
+    animation-name: guide-step-2;
+  }
+
+  .guide-steps li:nth-child(3) {
+    animation-name: guide-step-3;
+  }
+
+  .demo-chip-pick,
+  .demo-bar-row i,
+  .demo-bar-row b,
+  .demo-button,
+  .demo-done,
+  .demo-mover,
+  .demo-grab,
+  .demo-arrow,
+  .demo-arrowhead,
+  .demo-target,
+  .demo-play,
+  .demo-runner,
+  .demo-ring,
+  .demo-cut,
+  .demo-handle,
+  .demo-badge {
+    animation: var(--loop) var(--ease) infinite;
+  }
+
+  .demo-chip-pick {
+    animation-name: demo-chip;
+  }
+
+  .demo-bar-row i {
+    animation-name: demo-bar;
+  }
+
+  .demo-bar-row b {
+    animation-name: demo-show-2;
+  }
+
+  .demo-button {
+    animation-name: demo-press;
+  }
+
+  .demo-done {
+    animation-name: demo-show-3b;
+  }
+
+  .demo-mover {
+    animation-name: demo-mover;
+  }
+
+  .demo-grab {
+    animation-name: demo-grab;
+  }
+
+  .demo-arrow {
+    animation-name: demo-arrow;
+  }
+
+  .demo-arrowhead {
+    animation-name: demo-show-2;
+  }
+
+  .demo-target {
+    animation-name: demo-target;
+  }
+
+  .demo-play {
+    animation-name: demo-play;
+  }
+
+  .demo-runner {
+    animation-name: demo-runner;
+    animation-timing-function: linear;
+  }
+
+  .demo-ring {
+    animation-name: demo-ring;
+  }
+
+  .demo-cut {
+    animation-name: demo-cut;
+  }
+
+  .demo-handle-left {
+    animation-name: demo-handle-left;
+  }
+
+  .demo-handle-right {
+    animation-name: demo-handle-right;
+  }
+
+  .demo-badge-speed {
+    animation-name: demo-show-3;
+  }
+
+  .demo-badge-gif {
+    animation-name: demo-show-3b;
+  }
+}
+
+@keyframes guide-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes guide-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@keyframes guide-step-1 {
+  0%,
+  30% {
+    opacity: 1;
+  }
+
+  36%,
+  97% {
+    opacity: 0.42;
+  }
+}
+
+@keyframes guide-step-2 {
+  0%,
+  30% {
+    opacity: 0.42;
+  }
+
+  36%,
+  63% {
+    opacity: 1;
+  }
+
+  69%,
+  100% {
+    opacity: 0.42;
+  }
+}
+
+@keyframes guide-step-3 {
+  0%,
+  63% {
+    opacity: 0.42;
+  }
+
+  69%,
+  97% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.42;
+  }
+}
+
+/* 둘째 단계에서 나타나는 것 */
+@keyframes demo-show-2 {
+  0%,
+  50% {
+    opacity: 0;
+  }
+
+  58%,
+  97% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 셋째 단계에서 나타나는 것 */
+@keyframes demo-show-3 {
+  0%,
+  68% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  73%,
+  97% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes demo-show-3b {
+  0%,
+  77% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  82%,
+  97% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes demo-chip {
+  0%,
+  8% {
+    border-color: var(--border-strong);
+    background: transparent;
+    color: var(--muted);
+    transform: scale(1);
+  }
+
+  11% {
+    transform: scale(0.93);
+  }
+
+  15%,
+  97% {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--accent-text);
+    transform: scale(1);
+  }
+
+  100% {
+    border-color: var(--border-strong);
+    background: transparent;
+    color: var(--muted);
+  }
+}
+
+@keyframes demo-bar {
+  0%,
+  34% {
+    transform: scaleX(0);
+  }
+
+  54%,
+  97% {
+    transform: scaleX(1);
+  }
+
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes demo-press {
+  0%,
+  66% {
+    background: transparent;
+    color: var(--text);
+    transform: scale(1);
+  }
+
+  71% {
+    transform: scale(0.92);
+  }
+
+  76%,
+  97% {
+    background: var(--accent);
+    color: var(--accent-text);
+    transform: scale(1);
+  }
+
+  100% {
+    background: transparent;
+    color: var(--text);
+  }
+}
+
+@keyframes demo-mover {
+  0% {
+    opacity: 0;
+    transform: translate(-30px, 34px);
+  }
+
+  5% {
+    opacity: 1;
+    transform: translate(-30px, 34px);
+  }
+
+  22%,
+  68% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+
+  90%,
+  97% {
+    opacity: 1;
+    transform: translate(130px, -54px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(130px, -54px);
+  }
+}
+
+/* 선수를 쥐고 있는 동안의 테두리 빛 */
+@keyframes demo-grab {
+  0%,
+  3% {
+    opacity: 0;
+  }
+
+  6%,
+  22% {
+    opacity: 1;
+  }
+
+  28%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes demo-arrow {
+  0%,
+  36% {
+    stroke-dashoffset: 100;
+    opacity: 1;
+  }
+
+  56%,
+  97% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+
+  100% {
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+@keyframes demo-target {
+  0%,
+  38% {
+    opacity: 0;
+  }
+
+  46%,
+  84% {
+    opacity: 1;
+  }
+
+  90%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes demo-play {
+  0%,
+  64% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+
+  67% {
+    opacity: 1;
+    transform: scale(0.9);
+  }
+
+  71%,
+  97% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes demo-runner {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+
+  4% {
+    opacity: 1;
+  }
+
+  96% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(150px, -20px);
+  }
+}
+
+@keyframes demo-ring {
+  0%,
+  34% {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+
+  41%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes demo-cut {
+  0%,
+  6% {
+    transform: scaleX(0);
+  }
+
+  26%,
+  97% {
+    transform: scaleX(1);
+  }
+
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes demo-handle-left {
+  0%,
+  6% {
+    transform: translateX(0);
+  }
+
+  26%,
+  97% {
+    transform: translateX(62px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes demo-handle-right {
+  0%,
+  6% {
+    transform: translateX(0);
+  }
+
+  26%,
+  97% {
+    transform: translateX(-52px);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 480px) {
+  .guide {
+    padding: 24px 20px 18px;
+  }
+}
+
+/* 네이버 카페 안내의 예시 그림 */
+.demo-desk {
+  fill: #16212a;
+}
+
+.demo-sheet {
+  fill: rgb(255 255 255 / 8%);
+  stroke: rgb(255 255 255 / 16%);
+}
+
+.demo-textlines rect {
+  fill: rgb(255 255 255 / 26%);
+}
+
+.demo-photo-a {
+  fill: #2f8f6a;
+  /* 다 된 모습(움직임을 줄인 환경): 첫 사진이 자리로 내려와 있다. */
+  transform: translateY(70px);
+}
+
+.demo-photo-b {
+  fill: #c8454f;
+}
+
+.demo-slot {
+  fill: none;
+  stroke: rgb(255 255 255 / 55%);
+  stroke-dasharray: 4 3;
+  stroke-width: 1.5;
+}
+
+.demo .demo-slot-text {
+  fill: rgb(255 255 255 / 60%);
+  font-size: 9px;
+  text-anchor: middle;
+}
+
+.demo-consent > rect:first-child,
+.demo-wait > rect {
+  fill: rgb(0 0 0 / 55%);
+  stroke: rgb(255 255 255 / 18%);
+}
+
+.demo-check-box {
+  fill: #03c75a;
+}
+
+.demo-check,
+.demo-wait path,
+.demo-wait circle {
+  fill: none;
+  stroke: #ffffff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+}
+
+.demo-consent,
+.demo-wait {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .demo-photo-a,
+  .demo-consent,
+  .demo-wait {
+    animation: var(--loop) var(--ease) infinite;
+  }
+
+  .demo-photo-a {
+    animation-name: demo-photo-move;
+  }
+
+  .demo-consent {
+    animation-name: demo-show-2;
+  }
+
+  .demo-wait {
+    animation-name: demo-show-3;
+  }
+}
+
+@keyframes demo-photo-move {
+  0%,
+  10% {
+    transform: translateY(0);
+  }
+
+  28%,
+  97% {
+    transform: translateY(70px);
+  }
+
+  100% {
+    transform: translateY(0);
+  }
+}
+
+/* 피드에 올린 글을 고치러 들어왔을 때의 안내 */
+.editor-feed-note {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 0;
+  padding: 10px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-2);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.editor-feed-note > span {
+  flex: 1 1 260px;
+}
+
+@media (max-width: 760px) {
+  .editor-feed-note {
+    padding-inline: 16px;
+  }
+}
+
+/* 사진: 두 장이 붙고 → 표시가 그려지고 → 본문에 들어간다 */
+.demo-pe-shot {
+  fill: #2c6a45;
+  stroke: rgb(255 255 255 / 85%);
+  stroke-width: 2;
+}
+
+.demo-pe-turf {
+  stroke: rgb(255 255 255 / 30%);
+  stroke-width: 1.5;
+}
+
+.demo-pe-ring {
+  fill: rgb(255 225 77 / 22%);
+  stroke: #ffe14d;
+  stroke-width: 2.5;
+}
+
+.demo-pe-arrow {
+  fill: none;
+  stroke: #ffe14d;
+  stroke-dasharray: 6 5;
+  stroke-linecap: round;
+  stroke-width: 3;
+}
+
+.demo-pe-head {
+  fill: #ffe14d;
+}
+
+.demo-pe-tag rect {
+  fill: #ffe14d;
+}
+
+.demo-pe-tag text {
+  fill: #111113;
+  font-size: 11px;
+  font-weight: 800;
+  text-anchor: middle;
+}
+
+.demo-pe-insert rect {
+  fill: var(--accent);
+}
+
+.demo-pe-insert text {
+  fill: var(--accent-text);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-anchor: middle;
+}
+
+.demo-pe-a,
+.demo-pe-b,
+.demo-pe-insert {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .demo-pe-a,
+  .demo-pe-b,
+  .demo-pe-marks,
+  .demo-pe-insert {
+    animation: var(--loop) var(--ease) infinite;
+  }
+
+  .demo-pe-a {
+    animation-name: demo-pe-join-a;
+  }
+
+  .demo-pe-b {
+    animation-name: demo-pe-join-b;
+  }
+
+  .demo-pe-marks {
+    animation-name: demo-pe-marks;
+  }
+
+  .demo-pe-insert {
+    animation-name: demo-show-3;
+  }
+}
+
+@keyframes demo-pe-join-a {
+  0%,
+  6% {
+    transform: translate(-14px, 6px) rotate(-4deg);
+  }
+
+  24%,
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes demo-pe-join-b {
+  0%,
+  6% {
+    transform: translate(14px, -6px) rotate(4deg);
+  }
+
+  24%,
+  100% {
+    transform: none;
+  }
+}
+
+/* 둘째 단계에서 나타나 끝까지 남는다 */
+@keyframes demo-pe-marks {
+  0%,
+  35% {
+    opacity: 0;
+  }
+
+  42%,
+  97% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}

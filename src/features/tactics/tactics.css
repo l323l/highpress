@@ -1,0 +1,128 @@
+.tactics-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 12px;
+  overflow-y: auto;
+  background: var(--surface);
+}
+
+.tactics-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.tactics-spacer {
+  flex: 1;
+}
+
+.tactics-team {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tactics-swatch {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+}
+
+/* 남는 공간을 모두 차지하고, 그 안에서 전술판이 비율을 지키며 가운데에 놓인다. 뒤에 깔리는 배경은 없다. */
+.tactics-board {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.tactics-board canvas {
+  border-radius: var(--radius-sm);
+}
+
+.tactics-board--drawing {
+  cursor: crosshair;
+}
+
+.tactics-color {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.tactics-color input[type='color'] {
+  width: 32px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+}
+
+.tactics-hint {
+  font-size: 13px;
+}
+
+/* 안내 문구 길이가 달라져도 줄 수가 바뀌지 않게 한다 (전술판 크기 고정). */
+.tactics-scene-row .tactics-hint {
+  flex: 1 1 220px;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 선수 크기: 글자 폭이 바뀌어도 슬라이더가 밀리지 않게 글자 칸의 폭을 잡아 둔다. */
+.tactics-size span {
+  min-width: 11.5em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tactics-size input[type='range'] {
+  width: 132px;
+  accent-color: var(--text);
+}
+
+.tactics-name {
+  width: 9em;
+  padding: 4px 8px;
+}
+
+.tactics-scenes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tactics-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+
+.tactics-drag {
+  cursor: grab;
+  user-select: none;
+}
+
+.tactics-note {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+}
+
+.tactics-error {
+  color: var(--danger);
+}

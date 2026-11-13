@@ -1,0 +1,38 @@
+.licenses {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 20px 64px;
+}
+
+.license-table {
+  width: 100%;
+  margin-top: 24px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.license-text {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.license-text summary {
+  cursor: pointer;
+}
+
+.license-text pre {
+  max-height: 320px;
+  overflow: auto;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  font-size: 12px;
+  white-space: pre-wrap;
+}
+
+.license-table th,
+.license-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+}
