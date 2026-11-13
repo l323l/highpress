@@ -87,11 +87,11 @@ web
 
 ## Evidence on Hand
 
-- 요구사항과 결정 기록: `축구 칼럼 앱 PRD v2.md`, `PLAN.md`
-- 버전별 수정 기록: `fixed.md`
+- 요구사항과 결정 기록: `docs/PRD.md`, `docs/PLAN.md`
+- 버전별 수정 기록: `docs/log/fixed.md`
 - 약관·방침·라이선스 화면: `#/terms`, `#/privacy`, `#/licenses`
 - 추천 사이트 목록: `packages/core/src/stats/sites.ts` (웹 · 앱 공통, 2026-10-24 A3-1에서 옮김) (사이트 설명은 요청자가 직접 적기로 하여 비어 있음)
-- 영상 성능 실측: `m0/video-spike.html`, 결과는 `PLAN.md` 14.3
+- 영상 성능 실측: `experiments/video-spike.html`, 결과는 `docs/PLAN.md` 14.3
 
 없는 것 (만들어 넣지 않는다): 사용자 후기, 사용자 수·사용량 수치, 언론 보도, 성공 지표의 실제 측정값, 칼럼 예시 글, 제품 스크린샷 자산.
 

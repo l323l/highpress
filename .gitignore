@@ -53,3 +53,8 @@ GoogleService-Info.plist
 *.njsproj
 *.sln
 *.sw?
+
+# 작업 기록 (내 PC에만 둔다)
+compact.md
+feedback.md
+appsuggest.md

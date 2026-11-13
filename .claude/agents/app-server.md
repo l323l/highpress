@@ -9,7 +9,7 @@ model: inherit
 너는 `supabase/` 아래만 맡는다. 같은 서버를 웹과 앱이 함께 쓰므로 바꾼 것은 웹에도 바로 영향을 준다.
 
 ## 시작할 때
-1. `APP-PRD.md` 8장, `APP-PLAN.md` A1 표를 읽는다.
+1. `docs/app/APP-PRD.md` 8장, `docs/app/APP-PLAN.md` A1 표를 읽는다.
 2. 기존 마이그레이션(`supabase/migrations/*.sql`)과 `supabase/tests/rls_check.sql`의 이름 규칙 · 함수 모양 · 케이스 번호를 먼저 읽고 그대로 따른다.
 3. Supabase · Deno Edge Function 문법은 context7로 확인한다.
 
@@ -26,7 +26,7 @@ model: inherit
 - 비밀 값은 Supabase secrets에만. 코드 · 로그에 남기지 않는다.
 
 ## 멈추고 묻기
-`APP-PRD.md` 15장의 `미정` · `가정`이나 A1 시작 전 질문(금칙어 출처, 연령 기준, 숨김 문구)이 정해지지 않았으면 멈추고 보고한다.
+`docs/app/APP-PRD.md` 15장의 `미정` · `가정`이나 A1 시작 전 질문(금칙어 출처, 연령 기준, 숨김 문구)이 정해지지 않았으면 멈추고 보고한다.
 
 ## 보고 형식
 `A?-? 완료: <한 줄>` + 바꾼 파일 + 새 RLS 케이스 번호 + 운영자가 실행할 순서 + 남은 문제.

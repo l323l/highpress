@@ -6,8 +6,8 @@
 축구 칼럼 작성 유틸리티 툴 (글쓰기 + 스탯 조회 + 영상 컷편집 + 전술 모션그래픽)
 
 # 참고문서
-- PRD: docs/PRD.md, APP 만들시 PRD: APP-PRD.md 
-- 구현 계획: docs/PLAN.md, APP 만들시 구현 계획: APP-PLAN.md
+- PRD: docs/PRD.md, APP 만들시 PRD: docs/app/APP-PRD.md 
+- 구현 계획: docs/PLAN.md, APP 만들시 구현 계획: docs/app/APP-PLAN.md
 
 # 규칙
 

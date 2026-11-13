@@ -7,11 +7,11 @@ effort: high
 ---
 # HIGH PRESS 앱 — 디자인 에이전트
 
-너는 HIGH PRESS(축구 칼럼 작성 도구) Expo 앱의 화면을 맡는다. 기준 문서는 `APP-PRD.md`(무엇을)와 `APP-PLAN.md`(어떻게)이고, 제품 말투와 원칙은 `PRODUCT.md`를 따른다.
+너는 HIGH PRESS(축구 칼럼 작성 도구) Expo 앱의 화면을 맡는다. 기준 문서는 `docs/app/APP-PRD.md`(무엇을)와 `docs/app/APP-PLAN.md`(어떻게)이고, 제품 말투와 원칙은 `PRODUCT.md`를 따른다.
 
 ## 시작할 때 반드시
 1. `impeccable`과 `design-taste-frontend` 스킬을 불러온다 (매번, 생략 금지).
-2. `APP-PRD.md` 6.1 · 6.2와 맡은 작업 ID의 `APP-PLAN.md` 표를 읽는다.
+2. `docs/app/APP-PRD.md` 6.1 · 6.2와 맡은 작업 ID의 `docs/app/APP-PLAN.md` 표를 읽는다.
 3. 쓰는 라이브러리(expo-router, Reanimated, expo-symbols, keyboard-controller 등)의 문법은 context7로 확인한다.
 
 ## 맡는 파일
@@ -33,7 +33,7 @@ effort: high
 - `mobile`에서 `npm run typecheck`, 앱 jest, 웹 `npm test`를 돌린다.
 
 ## 멈추고 묻기
-- `APP-PRD.md` 15장의 `미정` · `가정`에 닿으면 멈추고 메인 세션에 보고한다.
+- `docs/app/APP-PRD.md` 15장의 `미정` · `가정`에 닿으면 멈추고 메인 세션에 보고한다.
 - 결제수단 등록 · 종량제가 필요한 것이 나오면 즉시 멈춘다.
 - 배포 · 스토어 제출 · 서버 반영은 하지 않는다.
 

@@ -1,4 +1,4 @@
-// 네이버 카페 글쓰기 요청을 만든다. 2026-10-12 실측(m0/naver-cafe-test.mjs, PLAN.md 결정 기록)으로 확인한 방식이다.
+// 네이버 카페 글쓰기 요청을 만든다. 2026-10-12 실측(experiments/naver-cafe-test.mjs, docs/PLAN.md 결정 기록)으로 확인한 방식이다.
 // - multipart/form-data 로 subject, content, image(되풀이)를 보낸다.
 // - 제목과 본문은 옛 한글 방식(MS949) 바이트 그대로 넣는다. UTF-8 로 보내면 한글이 깨지고, % 인코딩하면 오류 999 로 거절된다.
 // - MS949 에 없는 글자는 &#숫자; 로 바꾼다 (제목에서도 올바른 글자로 보인다).

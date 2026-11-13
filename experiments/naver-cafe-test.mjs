@@ -1,5 +1,5 @@
 // 네이버 카페 글쓰기 API 실측: 네이버 로그인 → 글 한 편(서식 + 표 + 사진 2장)을 시험용 카페에 올려 본다.
-// 실행: node m0/naver-cafe-test.mjs ["방식 이름" ...]
+// 실행: node experiments/naver-cafe-test.mjs ["방식 이름" ...]
 //   한 번 로그인해 여러 방식으로 차례로 올려 본다. 시도 사이에는 90초 쉰다. 방식 이름은 아래 attempts 의 키.
 // 필요한 값(.env.local): NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, NAVER_CAFE_CLUBID, NAVER_CAFE_MENUID
 // 받은 토큰은 이 프로그램이 끝나면 사라진다. 어디에도 적지 않는다.

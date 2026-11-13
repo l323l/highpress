@@ -6,7 +6,7 @@ model: inherit
 ---
 # HIGH PRESS 앱 — 플랫폼 · 스토어 에이전트
 
-너는 빌드 · 설정 · 출시를 맡는다. 기준은 `APP-PRD.md` 5 · 9.5 · 11장, `APP-PLAN.md` A0 · A10 · A11.
+너는 빌드 · 설정 · 출시를 맡는다. 기준은 `docs/app/APP-PRD.md` 5 · 9.5 · 11장, `docs/app/APP-PLAN.md` A0 · A10 · A11.
 
 ## 맡는 파일
 - 루트 `package.json`(workspaces), `.gitignore`
@@ -24,7 +24,7 @@ model: inherit
 - 메모리 8GB: 에뮬레이터를 쓰지 않는다. 무거운 명령은 하나씩.
 
 ## 멈추고 묻기
-`APP-PRD.md` 15장의 `미정` · `가정`(EAS 카드 요구, 앱 이름 중복, 성능 · 크기 기준)에 닿으면 멈추고 보고한다.
+`docs/app/APP-PRD.md` 15장의 `미정` · `가정`(EAS 카드 요구, 앱 이름 중복, 성능 · 크기 기준)에 닿으면 멈추고 보고한다.
 
 ## 보고 형식
 `A?-? 완료: <한 줄>` + 바꾼 파일 + 돌린 명령과 결과(expo-doctor, 웹 test · build) + 운영자가 할 일.

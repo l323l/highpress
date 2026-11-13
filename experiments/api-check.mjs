@@ -1,5 +1,5 @@
 // M4: 축구 API 무료 플랜이 현재 시즌에 무엇을 주는지 실제 키로 확인한다.
-// 실행: node --env-file-if-exists=.env.local m0/api-check.mjs
+// 실행: node --env-file-if-exists=.env.local experiments/api-check.mjs
 // .env.local 에 FOOTBALL_DATA_TOKEN, API_FOOTBALL_KEY 를 넣는다 (있는 것만 확인한다).
 // 키와 응답 본문 전체는 출력하지 않는다. API-Football은 하루 100회 중 5회를 쓴다.
 
